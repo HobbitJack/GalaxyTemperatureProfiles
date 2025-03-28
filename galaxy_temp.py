@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from dataloader import DataLoader
 from galaxyfinder import GalaxyFinder
 from galaxyimage import GalaxyImage
@@ -8,7 +10,7 @@ from image import Image
 import numpy
 from radialaverager import RadialAverager
 from temperaturecalculator import TemperatureCalculator
-from temperature_profile import TemperatureProfile
+from temperatureprofile import TemperatureProfile
 
 
 def main() -> None:

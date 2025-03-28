@@ -46,7 +46,7 @@ class Image:
 
     def get_array_index(self, *coord) -> tuple[int, int]:
         if len(coord) == 1:
-            x, y = *coord
+            x, y = (coord[0][0], coord[0][1])
         else:
             x, y = coord
 

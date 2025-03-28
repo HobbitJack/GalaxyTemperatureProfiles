@@ -1,4 +1,4 @@
-from GalaxyLoader import GalaxyLoader
+from galaxyloader import GalaxyLoader
 
 
 class DataLoader:
