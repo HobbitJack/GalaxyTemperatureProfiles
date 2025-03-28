@@ -10,6 +10,7 @@ class GalaxyLoader:
         return numpy.random.random_sample((1024, 1024))
 
     def load_all_images(self) -> Image:
-        for image_name in range(3):
+        # Note: load_all_images is GUARANTEED to yeild in this order
+        for image_name in ["Wide.fits", "V.fits", "U.fits", "B.fits"]:
             filt = image_name.strip().split(".")[0]
             yield (filt, self.load_image(str(image_name)))
