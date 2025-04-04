@@ -17,7 +17,7 @@ def main() -> None:
     data_loader: DataLoader = DataLoader()
     for galaxy_name, galaxy in data_loader.load_all_galaxies():
 
-        wide_image: Image = next(galaxy.load_all_images())
+        wide, wide_image = next(galaxy.load_all_images())
         galaxy_finder: GalaxyFinder = GalaxyFinder(wide_image)
         galaxy_location: GalaxyLocation = galaxy_finder.find_galaxy()
 

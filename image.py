@@ -1,7 +1,7 @@
 import numpy
 import sys
 
-from typing import Self
+from typing import Self, Any
 
 
 class Image:
@@ -16,13 +16,13 @@ class Image:
         return self._data
 
     @data.setter
-    def data(self, value: any) -> None:
+    def data(self, value: Any) -> None:
         print("Error: Image data is not mutable.", file=sys.stderr)
         raise TypeError
 
     @property
     def shape(self) -> tuple[int, int]:
-        return (self.data.shape[1], self.data.shape[0])
+        return (self.data.shape[0], self.data.shape[1])
 
     def mean(self) -> float:
         return numpy.nanmean(self.data)
@@ -34,49 +34,29 @@ class Image:
         return numpy.nanstd(self.data)
 
     def scale(self, num: float | int) -> Self:
-        return Image(self.data / num)
+        return type(self)(self.data / num)
 
     def rot_right(self) -> Self:
-        return Image(numpy.rot90(self.data))
+        return type(self)(numpy.rot90(self.data))
 
     def rot_left(self) -> Self:
-        return Image(
+        return type(self)(
             numpy.rot90(self.data, 3)
         )  # Rotate 90 degrees 3 times -> 270 degrees
 
-    def get_array_index(self, *coord) -> tuple[int, int]:
-        if len(coord) == 1:
-            x, y = (coord[0][0], coord[0][1])
-        else:
-            x, y = coord
-
-        return (y - self.shape[1], x)
-
-    def __getitem__(self, key: tuple[slice, slice]) -> float:
+    def __getitem__(self, key: tuple[slice, slice]) -> float | numpy.ndarray:
         if len(key) != 2:
             print("Error: Images must be accessed in two dimensions.")
             raise ValueError
 
-        x_slice, y_slice = key
-        return Image(
-            self.data[
-                slice(
-                    None if y_slice.stop is None else (self.shape[1] - y_slice.stop),
-                    None if y_slice.start is None else (self.shape[1] - y_slice.start),
-                    y_slice.step,
-                )
-            ][x_slice]
-        )
-
-    def get(self, x, y) -> float:
-        return self.data[self.shape[1] - y][x]
+        return self.data[key]
 
     def __add__(self, other) -> Self:
         if not isinstance(other, Image):
             print("Error: Images can only be added with other images.")
             raise TypeError
 
-        return Image(self.data + other.data)
+        return type(self)(self.data + other.data)
 
     def __radd__(self, other) -> None:
         print("Error: Images can only be added with other images.")
@@ -87,7 +67,7 @@ class Image:
             print("Error: Images can only be subtracted with other images.")
             raise TypeError
 
-        return Image(self.data - other.data)
+        return type(self)(self.data - other.data)
 
     def __rsub__(self, other) -> None:
         print("Error: Images can only be subtracted with other images.")
@@ -98,7 +78,7 @@ class Image:
             print("Error: Images can only be multiplied with other images.")
             raise TypeError
 
-        return Image(self.data * other.data)
+        return type(self)(self.data * other.data)
 
     def __rmul__(self, other) -> None:
         print("Error: Images can only be multiplied with other images.")
@@ -109,7 +89,7 @@ class Image:
             print("Error: Images can only be divided with other images.")
             raise TypeError
 
-        return Image(self.data / other.data)
+        return type(self)(self.data / other.data)
 
     def __rdiv__(self, other) -> None:
         print("Error: Images can only be divided with other images.")

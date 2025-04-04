@@ -7,9 +7,9 @@ class GalaxyImage(Image):
         super().__init__(image.data)
 
     @property
-    def center(self):
-        return self.shape // 2
+    def center(self) -> tuple[float, float]:
+        return (self.shape[0] // 2, self.shape[1] // 2)
 
     @property
-    def radius(self):
+    def radius(self) -> float:
         return 2 * numpy.sqrt(self.shape[0] ** 2 + self.shape[1] ** 2)

@@ -5,9 +5,8 @@ import numpy
 
 class GalaxyFinder:
     def __init__(self, image: Image) -> None:
-        self.image = image
+        self.image: Image = image
 
     def find_galaxy(self) -> GalaxyLocation:
-        return GalaxyLocation(
-            self.image.shape // 2, numpy.sqrt(numpy.sum(self.image.shape // 2)) // 5
-        )
+        center = (self.image.shape[0] // 2, self.image.shape[1] // 2)
+        return GalaxyLocation(center, numpy.sqrt(numpy.sum(center) // 5))

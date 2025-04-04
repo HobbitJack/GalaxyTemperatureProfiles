@@ -10,26 +10,29 @@ class GalaxyMasker:
         self.location: GalaxyLocation = location
 
     def get_galaxy(self) -> Image:
-        center, radius = self.location
+        center = self.location.center
+        radius = self.location.radius
         center_x, center_y = center
-        return self.image[
-            center_x - radius : center_x + radius, center_y - radius : center_y + radius
-        ]
+        return Image(
+            self.image[
+                center_y - radius : center_y + radius,
+                center_x - radius : center_x + radius,
+            ]
+        )
 
     def mask_out_galaxy(self) -> Image:
         galaxy_rectangle = self.get_galaxy()
 
-        center = galaxy_rectangle.shape // 2
+        center = (galaxy_rectangle.shape[0] // 2, galaxy_rectangle.shape[1] // 2)
         radius = self.location.radius
 
         new_image = numpy.zeros(galaxy_rectangle.data.shape)
 
-        for x in range(galaxy_rectangle.shape[0]):
-            for y in range(galaxy_rectangle.shape[1]):
-                array_x, array_y = galaxy_rectangle.get_array_index(x, y)
+        for y in range(galaxy_rectangle.shape[0]):
+            for x in range(galaxy_rectangle.shape[1]):
                 if dist((x, y), center) > radius:
-                    new_image[array_x, array_y] = numpy.nan
+                    new_image[x, y] = numpy.nan
                 else:
-                    new_image[array_y, array_x] = galaxy_rectangle[x, y]
+                    new_image[y, x] = galaxy_rectangle[x, y]
 
         return Image(new_image)
