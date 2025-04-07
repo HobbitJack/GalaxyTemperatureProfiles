@@ -1,4 +1,5 @@
 from galaxyimage import GalaxyImage
+from image import Image
 import numpy
 
 
@@ -16,9 +17,10 @@ class TemperatureCalculator:
         for y in range(self.U_image.shape[0]):
             for x in range(self.U_image.shape[1]):
                 new_image[x, y] = self.calculate_temperature(
-                    self.U_V_image[x, y], self.B_V_image[x, y]
+                    self.U_V_image[x, y],
+                    self.B_V_image[x, y],
                 )
-        return GalaxyImage(new_image)
+        return GalaxyImage(Image(new_image))
 
     @property
     def U_V_image(self) -> GalaxyImage:

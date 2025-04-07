@@ -7,10 +7,11 @@ class TemperatureProfile:
         self.temperature_data: list[float] = data
 
     def plot_temperature(self, file_prefix="Temperature") -> None:
+        matplotlib.pyplot.figure(figsize=(8, 10))
         matplotlib.pyplot.plot(
             numpy.linspace(0, 1, len(self.temperature_data)), self.temperature_data
         )
         matplotlib.pyplot.xlabel("Radial Distance (Normalized to Galaxy Radius)")
         matplotlib.pyplot.ylabel("Effective Color Temperature")
-        matplotlib.pyplot.title(f"Temperature Profile of {file_prefix}")
+        matplotlib.pyplot.title(f"Temperature Profile of Galaxy {file_prefix}")
         matplotlib.pyplot.savefig(fname=f"output/{file_prefix}.png")

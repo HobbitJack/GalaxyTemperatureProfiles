@@ -9,4 +9,6 @@ class GalaxyFinder:
 
     def find_galaxy(self) -> GalaxyLocation:
         center = (self.image.shape[0] // 2, self.image.shape[1] // 2)
-        return GalaxyLocation(center, numpy.sqrt(numpy.sum(center) // 5))
+        return GalaxyLocation(
+            center, int(numpy.trunc(numpy.sqrt(numpy.sum(center) // 5))) + 1
+        )

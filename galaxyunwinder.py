@@ -7,4 +7,6 @@ class GalaxyUnwinder:
         self.image: GalaxyImage = image
 
     def unwind(self) -> numpy.ndarray:
-        return numpy.random.random_sample([360, self.image.radius])
+        return numpy.random.random_sample(
+            [360, int(numpy.trunc(self.image.radius)) + 1]
+        )

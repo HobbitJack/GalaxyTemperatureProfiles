@@ -13,10 +13,11 @@ class GalaxyMasker:
         center = self.location.center
         radius = self.location.radius
         center_x, center_y = center
+
         return Image(
             self.image[
-                center_y - radius : center_y + radius,
-                center_x - radius : center_x + radius,
+                slice(center_y - radius, center_y + radius),
+                slice(center_x - radius, center_x + radius),
             ]
         )
 
