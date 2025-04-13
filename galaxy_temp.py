@@ -2,6 +2,8 @@
 
 import numpy as np
 import sys
+import h5py
+import os
 from dataloader import DataLoader
 from galaxyfinder import GalaxyFinder
 from galaxylocation import GalaxyLocation
@@ -14,14 +16,15 @@ from temperaturecalculator import TemperatureCalculator
 from temperatureprofile import TemperatureProfile
 
 
-def process_galaxy(galaxy_name: str, galaxy) -> None:
+def process_galaxy(galaxy_name: str, filepath: str) -> None:
     print(f"Processing galaxy: {galaxy_name}")
 
     try:
-        galaxy_location = find_galaxy_location(galaxy)
-        filtered_images = mask_galaxy_images(galaxy, galaxy_location)
+        galaxy_data = load_h5_galaxy(filepath)
+        galaxy_location = find_galaxy_location(galaxy_data)
+        filtered_images = mask_galaxy_images(galaxy_data, galaxy_location)
 
-        if not all(f in filtered_images for f in ("R-band", "G-band", "Z-band")):
+        if not all(f in filtered_images for f in ("R", "G", "Z")):
             sys.stderr.write(f"Error: Missing R, G, or Z filters for {galaxy_name}. Skipping...\n")
             return
 
@@ -33,26 +36,37 @@ def process_galaxy(galaxy_name: str, galaxy) -> None:
         sys.exit(1)
 
 
-def find_galaxy_location(galaxy) -> GalaxyLocation:
-    wide_image: Image = next(galaxy.load_all_images())
+def load_h5_galaxy(filepath: str) -> dict:
+    with h5py.File(filepath, 'r') as f:
+        galaxy_data = {}
+        for band in ['R', 'G', 'Z']:
+            if band in f:
+                galaxy_data[band] = f[band][()]
+                print(f"Loaded {band}-band data")
+    return galaxy_data
+
+
+def find_galaxy_location(galaxy_data: dict) -> GalaxyLocation:
+    wide_image = Image(galaxy_data['R'])  # Assume R band is widest
     galaxy_finder = GalaxyFinder(wide_image)
     location = galaxy_finder.find_galaxy()
     print(f"Found galaxy location at {location}")
     return location
 
 
-def mask_galaxy_images(galaxy, location: GalaxyLocation) -> dict[str, GalaxyImage]:
-    images: dict[str, GalaxyImage] = {}
-    for filt, image in galaxy.load_all_images():
+def mask_galaxy_images(galaxy_data: dict, location: GalaxyLocation) -> dict[str, GalaxyImage]:
+    images = {}
+    for band, data in galaxy_data.items():
+        image = Image(data)
         masker = GalaxyMasker(image, location)
         masked_image = GalaxyImage(masker.mask_out_galaxy())
-        images[filt] = masked_image
-        print(f"Masked {filt}-band image")
+        images[band] = masked_image
+        print(f"Masked {band}-band image")
     return images
 
 
 def compute_temperature_profile(images: dict[str, GalaxyImage]) -> np.ndarray:
-    temp_calc = TemperatureCalculator(images["R-band"], images["G-band"], images["Z-band"])
+    temp_calc = TemperatureCalculator(images["R"], images["G"], images["Z"])
     temp_image = temp_calc.compute_temperature_image()
     print("Computed temperature image")
 
@@ -72,9 +86,12 @@ def plot_temperature_profile(galaxy_name: str, profile_data: np.ndarray) -> None
 
 
 def main() -> None:
-    loader = DataLoader()
-    for galaxy_name, galaxy in loader.load_all_galaxies():
-        process_galaxy(galaxy_name, galaxy)
+    data_path = "./galaxy_data_h5/"  # Folder with .h5 files
+    for filename in os.listdir(data_path):
+        if filename.endswith(".h5"):
+            galaxy_name = filename.split(".")[0]
+            filepath = os.path.join(data_path, filename)
+            process_galaxy(galaxy_name, filepath)
 
 
 if __name__ == "__main__":
