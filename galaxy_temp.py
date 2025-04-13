@@ -25,7 +25,7 @@ def process_galaxy(galaxy_name: str, filepath: str) -> None:
         filtered_images = mask_galaxy_images(galaxy_data, galaxy_location)
 
         if not all(f in filtered_images for f in ("R-band", "G-band", "Z-band")):
-            sys.stderr.write(f"Error: Missing R, G, or Z filters for {galaxy_name}. Skipping...\n")
+            sys.stderr.write(f"Error: Missing R-band, G-band, or Z-band filters for {galaxy_name}. Skipping...\n")
             return
 
         temperature_profile = compute_temperature_profile(filtered_images)
