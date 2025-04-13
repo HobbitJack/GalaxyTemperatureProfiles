@@ -21,7 +21,7 @@ def process_galaxy(galaxy_name: str, galaxy) -> None:
         galaxy_location = find_galaxy_location(galaxy)
         filtered_images = mask_galaxy_images(galaxy, galaxy_location)
 
-        if not all(f in filtered_images for f in ("R", "G", "Z")):
+        if not all(f in filtered_images for f in ("R-band", "G-band", "Z-band")):
             sys.stderr.write(f"Error: Missing R, G, or Z filters for {galaxy_name}. Skipping...\n")
             return
 
@@ -52,7 +52,7 @@ def mask_galaxy_images(galaxy, location: GalaxyLocation) -> dict[str, GalaxyImag
 
 
 def compute_temperature_profile(images: dict[str, GalaxyImage]) -> np.ndarray:
-    temp_calc = TemperatureCalculator(images["R"], images["G"], images["Z"])
+    temp_calc = TemperatureCalculator(images["R-band"], images["G-band"], images["Z-band"])
     temp_image = temp_calc.compute_temperature_image()
     print("Computed temperature image")
 
