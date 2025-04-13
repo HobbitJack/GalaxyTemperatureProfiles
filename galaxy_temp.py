@@ -1,49 +1,80 @@
 #!/usr/bin/python
 
+import numpy as np
+import sys
 from dataloader import DataLoader
 from galaxyfinder import GalaxyFinder
-from galaxyimage import GalaxyImage
 from galaxylocation import GalaxyLocation
 from galaxymasker import GalaxyMasker
+from galaxyimage import GalaxyImage
 from galaxyunwinder import GalaxyUnwinder
 from image import Image
-import numpy
 from radialaverager import RadialAverager
 from temperaturecalculator import TemperatureCalculator
 from temperatureprofile import TemperatureProfile
 
 
+def process_galaxy(galaxy_name: str, galaxy) -> None:
+    print(f"Processing galaxy: {galaxy_name}")
+
+    try:
+        galaxy_location = find_galaxy_location(galaxy)
+        filtered_images = mask_galaxy_images(galaxy, galaxy_location)
+
+        if not all(f in filtered_images for f in ("U", "B", "V")):
+            sys.stderr.write(f"Error: Missing U, B, or V filters for {galaxy_name}. Skipping...\n")
+            return
+
+        temperature_profile = compute_temperature_profile(filtered_images)
+        plot_temperature_profile(galaxy_name, temperature_profile)
+
+    except Exception as e:
+        sys.stderr.write(f"Error processing galaxy {galaxy_name}: {str(e)}\n")
+        sys.exit(1)
+
+
+def find_galaxy_location(galaxy) -> GalaxyLocation:
+    wide_image: Image = next(galaxy.load_all_images())
+    galaxy_finder = GalaxyFinder(wide_image)
+    location = galaxy_finder.find_galaxy()
+    print(f"Found galaxy location at {location}")
+    return location
+
+
+def mask_galaxy_images(galaxy, location: GalaxyLocation) -> dict[str, GalaxyImage]:
+    images: dict[str, GalaxyImage] = {}
+    for filt, image in galaxy.load_all_images():
+        masker = GalaxyMasker(image, location)
+        masked_image = GalaxyImage(masker.mask_out_galaxy())
+        images[filt] = masked_image
+        print(f"Masked {filt}-band image")
+    return images
+
+
+def compute_temperature_profile(images: dict[str, GalaxyImage]) -> np.ndarray:
+    temp_calc = TemperatureCalculator(images["U"], images["B"], images["V"])
+    temp_image = temp_calc.compute_temperature_image()
+    print("Computed temperature image")
+
+    unwinder = GalaxyUnwinder(temp_image)
+    radial_data = unwinder.unwind()
+    print(f"Unwound radial data: {radial_data.shape}")
+
+    averager = RadialAverager(radial_data)
+    profile_data = averager.compute_average()
+    return profile_data
+
+
+def plot_temperature_profile(galaxy_name: str, profile_data: np.ndarray) -> None:
+    profile = TemperatureProfile(profile_data)
+    profile.plot_temperature(galaxy_name)
+    print(f"Plotted temperature profile for {galaxy_name}")
+
+
 def main() -> None:
-    data_loader: DataLoader = DataLoader()
-    for galaxy_name, galaxy in data_loader.load_all_galaxies():
-
-        wide, wide_image = next(galaxy.load_all_images())
-        galaxy_finder: GalaxyFinder = GalaxyFinder(wide_image)
-        galaxy_location: GalaxyLocation = galaxy_finder.find_galaxy()
-
-        filtered_galaxy_images: dict[str, GalaxyImage] = {}
-
-        # U, V, B
-        for filt, image in galaxy.load_all_images():
-            galaxy_masker: GalaxyMasker = GalaxyMasker(image, galaxy_location)
-            filter_image: GalaxyImage = GalaxyImage(galaxy_masker.mask_out_galaxy())
-            filtered_galaxy_images[filt] = filter_image
-
-        temperature_calculator: TemperatureCalculator = TemperatureCalculator(
-            filtered_galaxy_images["U"],
-            filtered_galaxy_images["B"],
-            filtered_galaxy_images["V"],
-        )
-        temperature_image = temperature_calculator.compute_temperature_image()
-
-        galaxy_unwinder: GalaxyUnwinder = GalaxyUnwinder(temperature_image)
-        radial_data: numpy.ndarray = galaxy_unwinder.unwind()
-
-        temperature_averager = RadialAverager(radial_data)
-        temperature_data = temperature_averager.compute_average()
-        temperature_profile = TemperatureProfile(temperature_data)
-
-        temperature_profile.plot_temperature(galaxy_name)
+    loader = DataLoader()
+    for galaxy_name, galaxy in loader.load_all_galaxies():
+        process_galaxy(galaxy_name, galaxy)
 
 
 if __name__ == "__main__":
