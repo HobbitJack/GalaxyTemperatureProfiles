@@ -47,7 +47,7 @@ def main():
 
     dataset = h5py.File("dataset/Dataset.h5")
     data_images = [
-        index for index, key in enumerate(dataset["ans"]) if (key == 7 or key == 8)
+        index for index, key in enumerate(dataset["ans"]) if (key == 6 or key == 7)
     ]
 
     image: Image = Image(dataset["images"][random.choice(data_images), :, :, 2])
@@ -70,7 +70,7 @@ def main():
         )
     )
 
-    matplotlib.pyplot.savefig("finder.png")
+    matplotlib.pyplot.savefig("output/finder.png")
 
 
 if __name__ == "__main__":
