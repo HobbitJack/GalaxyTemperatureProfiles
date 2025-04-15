@@ -1,5 +1,5 @@
-import matplotlib.pyplot
-import numpy
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 class TemperatureProfile:

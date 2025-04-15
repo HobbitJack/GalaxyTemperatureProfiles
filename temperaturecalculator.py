@@ -1,6 +1,6 @@
 from galaxyimage import GalaxyImage
 from image import Image
-import numpy
+import numpy as np
 
 
 class TemperatureCalculator:
