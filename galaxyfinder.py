@@ -35,6 +35,7 @@ class GalaxyFinder:
             x, y, X, Y = coord
             if (x < image_center[0] < X) and (y < image_center[0] < Y):
                 center = catalogue.centroid_win[index]
+                center = (int(numpy.round(center[0])), int(numpy.round(center[1])))
                 radius = int(catalogue.equivalent_radius[index].value)
 
         return GalaxyLocation(center, radius)
