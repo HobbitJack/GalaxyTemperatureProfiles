@@ -3,15 +3,13 @@ import numpy
 
 
 class TemperatureProfile:
-    def __init__(self, data: list[float]) -> None:
-        self.temperature_data: list[float] = data
+    def __init__(self, temperature_data: list[float]) -> None:
+        self.temperature_data = temperature_data
 
-    def plot_temperature(self, file_prefix="Temperature") -> None:
-        matplotlib.pyplot.figure(figsize=(8, 10))
-        matplotlib.pyplot.plot(
-            numpy.linspace(0, 1, len(self.temperature_data)), self.temperature_data
-        )
-        matplotlib.pyplot.xlabel("Radial Distance (Normalized to Galaxy Radius)")
-        matplotlib.pyplot.ylabel("Effective Color Temperature")
-        matplotlib.pyplot.title(f"Temperature Profile of Galaxy {file_prefix}")
-        matplotlib.pyplot.savefig(fname=f"output/{file_prefix}.png")
+    def plot_temperature(self, galaxy_name: str) -> None:
+        plt.figure(figsize=(8, 10))
+        plt.plot(np.linspace(0, 1, len(self.temperature_data)), self.temperature_data)
+        plt.xlabel("Radial Distance (Normalized to Galaxy Radius)")
+        plt.ylabel("Effective Color Temperature")
+        plt.title(f"Temperature Profile of Galaxy {galaxy_name}")
+        plt.savefig(f"output/{galaxy_name}.png")
