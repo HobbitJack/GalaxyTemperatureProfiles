@@ -15,6 +15,22 @@ from radialaverager import RadialAverager
 from temperaturecalculator import TemperatureCalculator
 from temperatureprofile import TemperatureProfile
 
+"""
+galaxy_temp.py
+
+This script processes galaxy images stored in HDF5 (.h5) format to generate temperature profiles.
+
+Workflow:
+1. Load R-band, G-band, and Z-band images from the .h5 file.
+2. Automatically find the location of the galaxy using the R-band.
+3. Mask everything outside the galaxy to clean up noise.
+4. Calculate a temperature map using color differences between bands.
+5. Unwind the image radially (polar transformation).
+6. Compute the radial average temperature profile.
+7. Plot and save the temperature profile as a .png.
+
+This allows us to visualize how the temperature changes as we move outward from the galaxy center.
+"""
 
 def process_galaxy(galaxy_name: str, filepath: str) -> None:
     print(f"Processing galaxy: {galaxy_name}")
