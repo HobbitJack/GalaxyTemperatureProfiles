@@ -1,18 +1,25 @@
 from image import Image
 import numpy
+import h5py
 
 from typing import Generator
 
 
 class GalaxyLoader:
-    def __init__(self, galaxy_name: str, dataset_path: str):
-        self.load_path = dataset_path + galaxy_name
+    def __init__(self, galaxy_number: int, dataset_path: str):
+        self.load_path = dataset_path 
+        self.galaxy_number = galaxy_number
 
-    def load_image(self, image_name: str) -> Image:
-        return Image(numpy.random.random_sample((1024, 1024)))
+    def load_image(self, filt: str) -> Image:
+        dataset: h5py.File = h5py.File(self.load_path, "r")
+        if filt != "Wide":
+            image = dataset["images"][self.galaxy_number,:,:,{"G": 0, "R": 1, "Z": 2}[filt]]
+            return Image(image)
+        else:
+            image = sum(dataset["images"][self.galaxy_number,:,:,i] for i in range(3))
+            return Image(image)
 
     def load_all_images(self) -> Generator:
         # Note: load_all_images is GUARANTEED to yeild in this order
-        for image_name in ["Wide.fits", "V.fits", "U.fits", "B.fits"]:
-            filt = image_name.strip().split(".")[0]
-            yield (filt, self.load_image(str(image_name)))
+        for filt in ["Wide", "G", "R", "Z"]:
+            yield (filt, self.load_image(filt))
