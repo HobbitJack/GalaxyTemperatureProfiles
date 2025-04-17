@@ -1,3 +1,10 @@
+"""
+galaxyunwinder.py
+
+This module contains the GalaxyUnwinder class, which transforms a GalaxyImage from
+Cartesian (x, y) coordinates to a polar (θ, r) representation. It also includes
+an example usage under the __main__ guard for verifying accurate plots.
+"""
 from galaxyimage import GalaxyImage
 import numpy as np
 import os
@@ -8,6 +15,13 @@ class GalaxyUnwinder:
     """
 
     def __init__(self, image: GalaxyImage) -> None:
+        """
+        Arguments:
+            image {GalaxyImage} -- Galaxy image
+            center_x = midpoint of x-axis
+            center_y = midpoint of y-axis
+            max_radius = maximum radius from center to any corner.
+        """
         self.image: GalaxyImage = image
         self.center_x = self.image.shape[1] // 2
         self.center_y = self.image.shape[0] // 2
@@ -40,6 +54,10 @@ class GalaxyUnwinder:
         return polar_image
 
     if __name__ == "__main__":
+        """
+        Load a random sample of data.
+        Unwind the data and and display the polar image.
+        """
         import os
         import h5py
         import random
@@ -56,10 +74,10 @@ class GalaxyUnwinder:
         # Unwind and plot
         unwinder = GalaxyUnwinder(galaxy_image)
         polar = unwinder.unwind()
-
+        polar_T = polar.transpose()
         plt.figure()
-        plt.imshow(polar, aspect="auto", cmap="gray")
-        plt.title("Polar Unwound Galaxy Image")
+        plt.imshow(polar_T, aspect="auto", cmap="gray", origin = "lower")
+        plt.title("Polar Unwound Galaxy Image(Transposed Bottom Up)")
         plt.xlabel("Radius")
         plt.ylabel("Angle")
         plt.colorbar()
