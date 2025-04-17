@@ -11,17 +11,22 @@ class DataLoader:
         self.load_path = dataset_path
 
     def load_all_galaxies(self) -> Generator:
-        dataset: h5py.File = h5py.File(self.load_path, 'r')
+        dataset: h5py.File = h5py.File(self.load_path, "r")
         classification: numpy.ndarray[int] = dataset["ans"]
-        filtered_galaxies = [index for index, galaxy_class in enumerate(classification) if int(galaxy_class) in (6, 7)]
+        filtered_galaxies = [
+            index
+            for index, galaxy_class in enumerate(classification)
+            if int(galaxy_class) in (6, 7)
+        ]
         for galaxy_number in random.choices(filtered_galaxies, k=20):
             yield galaxy_number, GalaxyLoader(galaxy_number, self.load_path)
 
 
 if __name__ == "__main__":
-    import matplotlib.pyplot 
+    import matplotlib.pyplot
+
     dataloader = DataLoader()
     for galaxyloader in dataloader.load_all_galaxies():
-        for image in galaxyloader.load_all_images():
-            matplotlib.pyplot.imshow(image.data)
+        for image in galaxyloader[1].load_all_images():
+            matplotlib.pyplot.imshow(image[1].data)
             matplotlib.pyplot.show()

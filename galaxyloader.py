@@ -7,16 +7,20 @@ from typing import Generator
 
 class GalaxyLoader:
     def __init__(self, galaxy_number: int, dataset_path: str):
-        self.load_path = dataset_path 
+        self.load_path = dataset_path
         self.galaxy_number = galaxy_number
 
     def load_image(self, filt: str) -> Image:
         dataset: h5py.File = h5py.File(self.load_path, "r")
         if filt != "Wide":
-            image = dataset["images"][self.galaxy_number,:,:,{"G": 0, "R": 1, "Z": 2}[filt]]
+            image = dataset["images"][
+                self.galaxy_number, :, :, {"G": 0, "R": 1, "Z": 2}[filt]
+            ]
             return Image(image)
         else:
-            image = sum(dataset["images"][self.galaxy_number,:,:,i] for i in range(3))
+            image = sum(
+                dataset["images"][self.galaxy_number, :, :, i] for i in range(3)
+            )
             return Image(image)
 
     def load_all_images(self) -> Generator:
