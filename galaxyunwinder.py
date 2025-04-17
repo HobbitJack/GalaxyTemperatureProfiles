@@ -1,6 +1,6 @@
 from galaxyimage import GalaxyImage
 import numpy as np
-
+import os
 
 class GalaxyUnwinder:
     """
@@ -38,3 +38,31 @@ class GalaxyUnwinder:
                     polar_image[i, j] = np.nan
 
         return polar_image
+
+    if __name__ == "__main__":
+        import os
+        import h5py
+        import random
+        import matplotlib.pyplot as plt
+        from galaxyimage import GalaxyImage
+        from galaxyunwinder import GalaxyUnwinder
+
+        # Load the .h5 and pick an example image
+        dataset = h5py.File("dataset/Galaxy10_DECals.h5", "r")
+        data_images = [i for i, label in enumerate(dataset["ans"]) if label in (6, 7)]
+        raw = dataset["images"][random.choice(data_images), :, :, 2]
+        galaxy_image = GalaxyImage(raw)
+
+        # Unwind and plot
+        unwinder = GalaxyUnwinder(galaxy_image)
+        polar = unwinder.unwind()
+
+        plt.figure()
+        plt.imshow(polar, aspect="auto", cmap="gray")
+        plt.title("Polar Unwound Galaxy Image")
+        plt.xlabel("Radius")
+        plt.ylabel("Angle")
+        plt.colorbar()
+        plt.show()
+
+
