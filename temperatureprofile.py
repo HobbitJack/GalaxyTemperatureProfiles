@@ -13,14 +13,15 @@ The y-axis shows effective temperature in Kelvin.
 The plot is saved as a .png image in the output directory.
 """
 
+
 class TemperatureProfile:
     def __init__(self, temperature_data: list[float]) -> None:
         self.temperature_data = temperature_data
 
-    def plot_temperature(self, galaxy_name: str) -> None:
+    def plot_temperature(self, galaxy_number: int) -> None:
         plt.figure(figsize=(8, 10))
         plt.plot(np.linspace(0, 1, len(self.temperature_data)), self.temperature_data)
         plt.xlabel("Radial Distance (Normalized to Galaxy Radius)")
         plt.ylabel("Effective Temperature (Kelvin)")
-        plt.title(f"Temperature Profile of Galaxy {galaxy_name}")
-        plt.savefig(f"output/{galaxy_name}.png")
+        plt.title(f"Temperature Profile of Galaxy #{galaxy_number}")
+        plt.savefig(f"output/{galaxy_number}.png")

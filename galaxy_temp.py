@@ -1,9 +1,6 @@
 #!/usr/bin/python
 
-import numpy as np
-import sys
-import h5py
-import os
+import numpy
 from dataloader import DataLoader
 from galaxyfinder import GalaxyFinder
 from galaxylocation import GalaxyLocation
@@ -32,80 +29,31 @@ Workflow:
 This allows us to visualize how the temperature changes as we move outward from the galaxy center.
 """
 
-def process_galaxy(galaxy_name: str, filepath: str) -> None:
-    print(f"Processing galaxy: {galaxy_name}")
+data_loader: DataLoader = DataLoader()
+for galaxy_name, galaxy in data_loader.load_all_galaxies():
+    galaxy_images: dict[str, Image] = {}
+    for band, image in galaxy.load_all_images():
+        galaxy_images[band] = image
 
-    try:
-        galaxy_data = load_h5_galaxy(filepath)
-        galaxy_location = find_galaxy_location(galaxy_data)
-        filtered_images = mask_galaxy_images(galaxy_data, galaxy_location)
+    galaxy_finder: GalaxyFinder = GalaxyFinder(galaxy_images["R"])
+    galaxy_location: GalaxyLocation = galaxy_finder.find_galaxy()
 
-        if not all(f in filtered_images for f in ("R-band", "G-band", "Z-band")):
-            sys.stderr.write(f"Error: Missing R-band, G-band, or Z-band filters for {galaxy_name}. Skipping...\n")
-            return
+    mask_images: dict[str, Image] = {}
+    for image, band in galaxy_images.items():
+        galaxy_masker: GalaxyMasker = GalaxyMasker(galaxy_images, galaxy_location)
+        mask_images[band] = galaxy_masker.mask_out_galaxy()
 
-        temperature_profile = compute_temperature_profile(filtered_images)
-        plot_temperature_profile(galaxy_name, temperature_profile)
+    temperature_calculator: TemperatureCalculator = TemperatureCalculator(
+        mask_images["R"], mask_images["G"], mask_images["Z"]
+    )
 
-    except Exception as e:
-        sys.stderr.write(f"Error processing galaxy {galaxy_name}: {str(e)}\n")
-        sys.exit(1)
+    temperature_image: GalaxyImage = temperature_calculator.compute_temperature_image()
 
+    galaxy_unwinder: GalaxyUnwinder = GalaxyUnwinder(temperature_image)
+    temperature_unwound: numpy.ndarray = galaxy_unwinder.unwind()
 
-def load_h5_galaxy(filepath: str) -> dict:
-    with h5py.File(filepath, 'r') as f:
-        galaxy_data = {}
-        for band in ['R-band', 'G-band', 'Z']:
-            if band in f:
-                galaxy_data[band] = f[band][()]
-                print(f"Loaded {band}-band data")
-    return galaxy_data
-
-
-def find_galaxy_location(galaxy_data: dict) -> GalaxyLocation:
-    wide_image = Image(galaxy_data['R-band'])  # Assume R band is widest
-    galaxy_finder = GalaxyFinder(wide_image)
-    location = galaxy_finder.find_galaxy()
-    print(f"Found galaxy location at {location}")
-    return location
-
-
-def mask_galaxy_images(galaxy_data: dict, location: GalaxyLocation) -> dict[str, GalaxyImage]:
-    images = {}
-    for band, data in galaxy_data.items():
-        image = Image(data)
-        masker = GalaxyMasker(image, location)
-        masked_image = GalaxyImage(masker.mask_out_galaxy())
-        images[band] = masked_image
-        print(f"Masked {band}-band image")
-    return images
-
-
-def compute_temperature_profile(images: dict[str, GalaxyImage]) -> np.ndarray:
-    temp_calc = TemperatureCalculator(images["R-band"], images["G-band"], images["Z-band"])
-    temp_image = temp_calc.compute_temperature_image()
-    print("Computed temperature image")
-
-    unwinder = GalaxyUnwinder(temp_image)
-    radial_data = unwinder.unwind()
-    print(f"Unwound radial data: {radial_data.shape}")
-
-    averager = RadialAverager(radial_data)
-    profile_data = averager.compute_average()
-    return profile_data
-
-
-def plot_temperature_profile(galaxy_name: str, profile_data: np.ndarray) -> None:
-    profile = TemperatureProfile(profile_data)
-    profile.plot_temperature(galaxy_name)
-    print(f"Plotted temperature profile for {galaxy_name}")
-
-
-def main() -> None:
-    loader = DataLoader()
-    for galaxy_name, galaxy in loader.load_all_galaxies():
-        process_galaxy(galaxy_name, galaxy)
-
-
-if __name__ == "__main__":
-    main()
+    radial_averager: RadialAverager = RadialAverager(temperature_unwound)
+    temperature_profile: TemperatureProfile = TemperatureProfile(
+        radial_averager.compute_average()
+    )
+    temperature_profile.plot_temperature()
