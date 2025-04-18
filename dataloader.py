@@ -18,7 +18,7 @@ class DataLoader:
             for index, galaxy_class in enumerate(classification)
             if int(galaxy_class) in (6, 7)
         ]
-        for galaxy_number in random.choices(filtered_galaxies, k=20):
+        for galaxy_number in random.choices(filtered_galaxies, k=10):
             yield galaxy_number, GalaxyLoader(galaxy_number, self.load_path)
 
 
