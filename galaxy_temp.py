@@ -30,17 +30,17 @@ This allows us to visualize how the temperature changes as we move outward from 
 """
 
 data_loader: DataLoader = DataLoader()
-for galaxy_name, galaxy in data_loader.load_all_galaxies():
+for galaxy_number, galaxy in data_loader.load_all_galaxies():
     galaxy_images: dict[str, Image] = {}
     for band, image in galaxy.load_all_images():
         galaxy_images[band] = image
 
-    galaxy_finder: GalaxyFinder = GalaxyFinder(galaxy_images["R"])
+    galaxy_finder: GalaxyFinder = GalaxyFinder(galaxy_images["Z"])
     galaxy_location: GalaxyLocation = galaxy_finder.find_galaxy()
 
     mask_images: dict[str, Image] = {}
-    for image, band in galaxy_images.items():
-        galaxy_masker: GalaxyMasker = GalaxyMasker(galaxy_images, galaxy_location)
+    for band, image in galaxy_images.items():
+        galaxy_masker: GalaxyMasker = GalaxyMasker(image, galaxy_location)
         mask_images[band] = galaxy_masker.mask_out_galaxy()
 
     temperature_calculator: TemperatureCalculator = TemperatureCalculator(
@@ -56,4 +56,4 @@ for galaxy_name, galaxy in data_loader.load_all_galaxies():
     temperature_profile: TemperatureProfile = TemperatureProfile(
         radial_averager.compute_average()
     )
-    temperature_profile.plot_temperature()
+    temperature_profile.plot_temperature(galaxy_number)
