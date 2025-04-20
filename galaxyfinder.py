@@ -14,16 +14,20 @@ class GalaxyFinder:
     def find_galaxy(self) -> GalaxyLocation:
         image_center = (self.image.shape[0] // 2, self.image.shape[1] // 2)
 
+        # Find all of the sources in the image
         segment_map = photutils.segmentation.detect_sources(
             self.image.data, numpy.percentile(self.image.data, 75), npixels=30
         )
 
+        # This tries to separate out sources that are adjacent to each other.
         deblend = photutils.segmentation.deblend_sources(
             self.image.data, segment_map, npixels=30, nlevels=32, contrast=0.01
         )
 
         catalogue = photutils.segmentation.SourceCatalog(self.image.data, deblend)
 
+        # Iterate over the bounding-box boundaries for each source.
+        # Basically, within which source is the image center contained?
         for index, coord in enumerate(
             zip(
                 catalogue.bbox_xmin,
@@ -33,6 +37,7 @@ class GalaxyFinder:
             )
         ):
             x, y, X, Y = coord
+            # If we're inside the bounding box, that's our source!
             if (x < image_center[0] < X) and (y < image_center[0] < Y):
                 center = catalogue.centroid_win[index]
                 center = (int(numpy.round(center[0])), int(numpy.round(center[1])))
