@@ -41,3 +41,14 @@ A standard method to do so generates a grid upon the image; some fraction of the
 This method may be applied without such consequence to data to be used for imaging purposes (as is the case of this dataset), but for extended sources, it will disrupt the photometry of each pixel.
 The resultant damaged photometry was then scaled to fit in a uint8, which further compressed it; and we are unable to therefore recover the original pixel values.
 As such, we contest our results are defective not because of our pipeline, but in spite of it -- a better dataset, perhaps of higher resolution (such that the background subtraction mosaic shall be a smaller portion of the spatial distribution of the targets themselves -- and we therefore, despite the lack of any meaningful answer to the original question, we nevertheless fully believe our method itself to be successful, limited only by the data available to such a cause.
+
+
+(ALT. Conclusion Section)
+
+The analysis of effective temperature profiles across a diverse sample of galaxies reveals several key insights into their thermal structure. A common trend observed in many profiles is a gradual decrease in effective temperature with increasing radial distance from the galaxy center. This trend is consistent with theoretical expectations, as stellar populations in the central bulge tend to be hotter and denser than those in the outer regions.
+
+However, a significant number of profiles show deviations from this idealized gradient. Many galaxies exhibit sharp spikes in temperature at large radii, likely artifacts caused by either noise amplification in the outermost bins or contamination from bright, foreground stars or background galaxies. These fluctuations may also stem from limitations in masking accuracy or unwinding distortions, particularly in edge-on or irregularly shaped galaxies.
+
+In galaxies with smoother profiles, a central peak followed by a steady decline reinforces the notion of older, hotter stellar populations dominating the inner regions. Conversely, galaxies with flatter or even increasing outer temperature profiles may indicate active star formation in their disks or spiral arms.
+
+Overall, while the updated black-body–based temperature estimation method provides a more physically grounded framework compared to UBV-calibrated formulas, its practical sensitivity to noise, photometric uncertainties, and deblending issues in real DECaLS imagery must be carefully accounted for. Future refinements could involve adaptive radial binning, improved masking, or multi-band spectral fitting to enhance the stability and astrophysical reliability of the extracted temperature gradients.
