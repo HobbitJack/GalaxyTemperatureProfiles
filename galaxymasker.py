@@ -16,6 +16,7 @@ class GalaxyMasker:
         image (Image): original image with the galaxy
         location (GalaxyLocation): center and radius of the galaxy
     """
+
     def __init__(self, image: Image, location: GalaxyLocation) -> None:
         self.image: Image = image
         self.location: GalaxyLocation = location
@@ -74,15 +75,43 @@ if __name__ == "__main__":
     import matplotlib.pyplot
     from galaxyfinder import GalaxyFinder
 
+    FIXED_GALAXYNUM = 11710
+
     dataset = h5py.File("dataset/Dataset.h5")
     data_images = [
         index for index, key in enumerate(dataset["ans"]) if (key == 6 or key == 7)
     ]
 
-    image: Image = Image(dataset["images"][random.choice(data_images), :, :, 2])
+    image: Image = Image(
+        dataset["images"][
+            random.choice(data_images) if not FIXED_GALAXYNUM else FIXED_GALAXYNUM,
+            :,
+            :,
+            2,
+        ]
+    )
 
     galaxy_finder = GalaxyFinder(image)
     galaxy_location = galaxy_finder.find_galaxy()
+
+    matplotlib.pyplot.imshow(image.data)
+    matplotlib.pyplot.scatter(
+        [galaxy_location.center[0]], [galaxy_location.center[1]], marker="+"
+    )
+    matplotlib.pyplot.colorbar()
+
+    matplotlib.pyplot.gca().add_artist(
+        matplotlib.pyplot.Circle(
+            galaxy_location.center,
+            galaxy_location.radius,
+            fill=False,
+            color="Red",
+        )
+    )
+
+    matplotlib.pyplot.savefig("output/finder.png")
+
+    matplotlib.pyplot.figure()
 
     galaxy_masker = GalaxyMasker(image, galaxy_location)
 
