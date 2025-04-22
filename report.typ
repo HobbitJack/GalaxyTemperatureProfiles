@@ -1,12 +1,13 @@
 CMSE202 SECTION 3 GALACTIC ASTROPHYSICS PROJECT
+TEMPERATURE PROFILES OF SPIRAL GALAXIES FROM OPTICAL IMAGES
+//
 A REPORT
 ARTEMIY FILIPPOV, OWEN TORMALA, JACK UTEG, AND RYAN YU
 
 ABSTRACT
 To study galactic temperature profiles, we develop a novel analysis pipeline to process spiral galaxy images from the DECaLS Galaxy10 dataset.
 We apply image segmentation, masking, and compute for each pixel in the selection of the galactic a color temperature, from which we compute a real temperature.
-We attempt to plot this temperature as a function of radius, however due to the mosaic background subtraction performed on the original dataset the resultant temperature profiles are not formed properly and often have gaps, interpreted as a nominally negative absolute temperature, suggesting that this is indeed a great difficulty.
-Nevertheless, we believe the methods used would be successful if applied to a more fortunate dataset, and we therefore consider the system a success.
+We proceed to plot the resultant temperature profiles and we find a general trend consistent with the typical understanding of galactic center environments being denser and more energetic than the disk, however we also identify some galaxies which may suggest active star formation in the spiral arms.
 
 SECTION I: MOTIVATION AND PURPOSE
 Spiral galaxy dynamics are typically observed to follow flat rotation curves, typically interpreted to be compatible with a uniformly-distributed dark matter.
@@ -32,23 +33,13 @@ Unwrapping may then apply the techniques of a polar coordinate transformation, a
 
 SECTION III: RESULTS AND DISCUSSION
 Following development we proceed with an application of the finished pipeline to random data selected from the idea set of galaxies from the DECaLS dataset.
-Unfortunately we discovered promptly an issue, where the computed (Kelvin) temperature is negative.
-This is necessarily non-physical.
+The analysis of effective temperature profiles across a diverse sample of galaxies reveals several key insights into their thermal structure. We observe a trend in many profiles of a gradual decrease in effective temperature with increasing radial distance from the galaxy center.
+This is consistent with theoretical expectations, as stellar populations in the central bulge tend to be hotter and denser than those in the outer regions.
 
-We proceeded with a rudimentary cause analysis.
-The ultimate cause appears to have been, unfortunately, the background subtraction pre-applied to the dataset, to remove the brightness of the sky from these images.
-A standard method to do so generates a grid upon the image; some fraction of the baseline of each cell is subtracted from the contents thereof.
-This method may be applied without such consequence to data to be used for imaging purposes (as is the case of this dataset), but for extended sources, it will disrupt the photometry of each pixel.
-The resultant damaged photometry was then scaled to fit in a uint8, which further compressed it; and we are unable to therefore recover the original pixel values.
-As such, we contest our results are defective not because of our pipeline, but in spite of it -- a better dataset, perhaps of higher resolution (such that the background subtraction mosaic shall be a smaller portion of the spatial distribution of the targets themselves -- and we therefore, despite the lack of any meaningful answer to the original question, we nevertheless fully believe our method itself to be successful, limited only by the data available to such a cause.
+Nevertheless many profiles show deviations from this idealized gradient.
+Many galaxies exhibit sharp spikes in temperature at large radii, consistent with artifacts caused by noise amplification in the outermost bins or contamination from bright, foreground stars, background galaxies, or artifacts.
+These fluctuations may also stem from limitations in masking accuracy, particularly in irregularly-shaped spiral galaxies.
 
-
-(ALT. Conclusion Section)
-
-The analysis of effective temperature profiles across a diverse sample of galaxies reveals several key insights into their thermal structure. A common trend observed in many profiles is a gradual decrease in effective temperature with increasing radial distance from the galaxy center. This trend is consistent with theoretical expectations, as stellar populations in the central bulge tend to be hotter and denser than those in the outer regions.
-
-However, a significant number of profiles show deviations from this idealized gradient. Many galaxies exhibit sharp spikes in temperature at large radii, likely artifacts caused by either noise amplification in the outermost bins or contamination from bright, foreground stars or background galaxies. These fluctuations may also stem from limitations in masking accuracy or unwinding distortions, particularly in edge-on or irregularly shaped galaxies.
-
-In galaxies with smoother profiles, a central peak followed by a steady decline reinforces the notion of older, hotter stellar populations dominating the inner regions. Conversely, galaxies with flatter or even increasing outer temperature profiles may indicate active star formation in their disks or spiral arms.
-
-Overall, while the updated black-body–based temperature estimation method provides a more physically grounded framework compared to UBV-calibrated formulas, its practical sensitivity to noise, photometric uncertainties, and deblending issues in real DECaLS imagery must be carefully accounted for. Future refinements could involve adaptive radial binning, improved masking, or multi-band spectral fitting to enhance the stability and astrophysical reliability of the extracted temperature gradients.
+In galaxies with smoother profiles, a central peak followed by a steady decline reinforces the notion of younger, hotter stellar populations dominating the inner regions.
+Conversely, galaxies with flatter or even increasing outer temperature profiles may indicate active star formation in their disks or spiral arms.
+A future refinement of this procedure could involve adaptive radial binning, improved masking, or multi-band spectral fitting to enhance the stability and astrophysical reliability of the extracted temperature gradients.
