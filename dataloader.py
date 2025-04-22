@@ -13,6 +13,7 @@ class DataLoader:
     Attributes:
         load_path (str): Path to where the data is stored
     """
+
     def __init__(self, dataset_path: str = "dataset/Dataset.h5"):
         """
         Initializes a DataLoader object
@@ -33,7 +34,7 @@ class DataLoader:
         dataset: h5py.File = h5py.File(self.load_path, "r")
         classification: numpy.ndarray[int] = dataset["ans"]
         # creates a list of galaxies filtered to only types 6 and 7 which unbarred tight spirals
-        # and unbarred loose spirals respectively 
+        # and unbarred loose spirals respectively
         filtered_galaxies = [
             index
             for index, galaxy_class in enumerate(classification)

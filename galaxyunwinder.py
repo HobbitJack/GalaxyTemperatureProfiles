@@ -6,6 +6,7 @@ Cartesian (x, y) coordinates to a polar (θ, r) representation using the largest
 inscribed circle radius to guarantee in-bounds sampling. An example under the
 __main__ guard demonstrates its usage for visualization.
 """
+
 from galaxyimage import GalaxyImage
 import numpy as np
 import os

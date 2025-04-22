@@ -35,7 +35,7 @@ for galaxy_number, galaxy in data_loader.load_all_galaxies():
     for band, image in galaxy.load_all_images():
         galaxy_images[band] = image
 
-    galaxy_finder: GalaxyFinder = GalaxyFinder(galaxy_images["Z"])
+    galaxy_finder: GalaxyFinder = GalaxyFinder(galaxy_images["Wide"])
     galaxy_location: GalaxyLocation = galaxy_finder.find_galaxy()
 
     mask_images: dict[str, Image] = {}

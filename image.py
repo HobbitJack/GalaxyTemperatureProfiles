@@ -13,6 +13,7 @@ class Image:
     Attribute:
         data (np.ndarray): 2D array of image data.
     """
+
     def __init__(self, data: numpy.ndarray) -> None:
         if len(data.shape) != 2:
             print("Error: Image data must be two-dimensional", file=sys.stderr)

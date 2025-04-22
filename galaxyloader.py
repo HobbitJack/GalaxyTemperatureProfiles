@@ -9,10 +9,11 @@ class GalaxyLoader:
     """
     Class for loading in galaxies as images
 
-    Attributes: 
+    Attributes:
         load_path (str): directs where the data loads from
         galaxy_number (int): number of the galaxy in the header of the h5py file
     """
+
     def __init__(self, galaxy_number: int, dataset_path: str):
         """
         Initializes a galaxy loader object
@@ -30,7 +31,7 @@ class GalaxyLoader:
 
         Parameters:
             filt (str): which filter for data, g, r, z, or wide band
-        
+
         Returns:
             image (Image): image of the galaxy passed through the Image class
         """
@@ -42,7 +43,7 @@ class GalaxyLoader:
                 self.galaxy_number, :, :, {"G": 0, "R": 1, "Z": 2}[filt]
             ]
             return Image(image)
-        #Creates a wide band image by summing all the other bands
+        # Creates a wide band image by summing all the other bands
         else:
             image = sum(
                 numpy.array(

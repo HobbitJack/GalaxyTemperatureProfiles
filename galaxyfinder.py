@@ -17,6 +17,7 @@ class GalaxyFinder:
     Attribute:
         image (Image): Helper class that ensures correct passage
     """
+
     def __init__(self, image: Image) -> None:
         """
         Initialize GalaxyFinder with the image to find the central galaxy.
@@ -44,6 +45,12 @@ class GalaxyFinder:
         deblend = photutils.segmentation.deblend_sources(
             self.image.data, segment_map, npixels=30, nlevels=32, contrast=0.01
         )
+
+        if __name__ == "__main__":
+            import matplotlib.pyplot
+
+            matplotlib.pyplot.imshow(deblend, origin="lower", cmap=deblend.cmap)
+            matplotlib.pyplot.savefig("output/segment.png")
 
         catalogue = photutils.segmentation.SourceCatalog(self.image.data, deblend)
 

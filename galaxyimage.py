@@ -12,6 +12,7 @@ class GalaxyImage(Image):
     Attribute:
         image (Image): Image object containing galaxy data.
     """
+
     def __init__(self, image: Image) -> None:
         """
         Initialize a GalaxyImage object from a previous image.
