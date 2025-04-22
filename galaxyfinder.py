@@ -8,10 +8,31 @@ import photutils.segmentation
 
 
 class GalaxyFinder:
+    """
+    GalaxyFinder
+
+    This class locates the central galaxy in an astronomical image,
+    returning a bright source near the center of the image.
+
+    Attribute:
+        image (Image): Helper class that ensures correct passage
+    """
     def __init__(self, image: Image) -> None:
+        """
+        Initialize GalaxyFinder with the image to find the central galaxy.
+        """
         self.image: Image = image
 
     def find_galaxy(self) -> GalaxyLocation:
+        """
+        Find the galaxy nearest to the center of the image.
+
+        Uses photutils to find sources, separate them out based off of brightness,
+        deblend, or separate adjacent sources, and iterate to find the central galaxy.
+
+        Returns:
+            GalaxyLocation: Object containing the coordinates and radius of the galaxy
+        """
         image_center = (self.image.shape[0] // 2, self.image.shape[1] // 2)
 
         # Find all of the sources in the image
