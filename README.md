@@ -1,7 +1,7 @@
 # Galaxy Temperature Modelling
 
-This repository is home to a failed experiment on using multiwavelength optical images to model the temperature profiles of spiral galaxies from the Galaxy10 DECaLS dataset.
-Created for a final project in a computer science class, our team is super happy with the implementation of a multi-part project on this scale, even though there were a few problems preventing a working implementation of the final concept.
+This repository is home to an experiment on using multiwavelength optical images to model the temperature profiles of spiral galaxies from the Galaxy10 DECaLS dataset.
+Created for a final project in a computer science class, our team is super happy with the implementation of a multi-part project on this scale, even though there were a few problems with the final implementation of the concept which could be improved in the future.
 
 ### Concept
 The concept of this project was primarily to leverage the size of our team.
@@ -17,11 +17,8 @@ Additionaly, because of the modular design, each part could be debugged, tested,
 This resulted in an ergonomic development process that provided exceptional locality of behavior and prevented any module from sprialing with feature creep.
 Aditionally, the implementation of each individual part seems to have gone incredibly smoothly, resulting in a tight pipeline that fully processes our data quickly, and it is very easy to understand the whole program thanks to the pipeline and subprocess design.
 
-### What Went Wrong
-Despite the successes we identify one major problem with this implementation: The dataset is pre-background-corrected, but the standard method of this background correction is applied by applying a local background to each small square of pixels, causing a mosaic-like effect, visible in the output of running `dataloader.py` module as a program.
-This results in temperature profile that is for the greatest part nonsense, despite the proper operation of the rest of the pipeline.
-This method *is* appropriate for wide-FoV images of large extended sources, but in a situation like this where the subtraction is primarily to remove a mostly-uniform sky background this method is likely less than desirable.
-The result is that, ultimately, this dataset is unsuitable for this process, and it is a shame that this limitation seems to be the primary flaw in this project.
+### More Information
+See `report/report.pdf` for a complete report on the development and results of this project.
 
 ## Contributors 
 - Artemiy Filippov | AttackOnBreakfast
