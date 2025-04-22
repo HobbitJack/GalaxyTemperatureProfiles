@@ -45,7 +45,10 @@ class GalaxyLoader:
         #Creates a wide band image by summing all the other bands
         else:
             image = sum(
-                dataset["images"][self.galaxy_number, :, :, i] for i in range(3)
+                numpy.array(
+                    dataset["images"][self.galaxy_number, :, :, i], dtype="int32"
+                )
+                for i in range(3)
             )
             return Image(image)
 

@@ -49,6 +49,10 @@ if __name__ == "__main__":
 
     dataloader = DataLoader()
     for galaxyloader in dataloader.load_all_galaxies():
-        for image in galaxyloader[1].load_all_images():
-            matplotlib.pyplot.imshow(image[1].data)
-            matplotlib.pyplot.show()
+        images = [image for band, image in galaxyloader[1].load_all_images()]
+        wide, g, r, z = images
+        matplotlib.pyplot.imshow(
+            numpy.array(r.data, dtype="int16") - numpy.array(g.data, dtype="int16")
+        )
+        matplotlib.pyplot.colorbar()
+        matplotlib.pyplot.show()
