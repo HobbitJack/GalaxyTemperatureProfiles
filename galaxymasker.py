@@ -11,6 +11,7 @@ class GalaxyMasker:
         self.image: Image = image
         self.location: GalaxyLocation = location
 
+    # This gets a bounding box around the circle of the galaxy_
     def get_galaxy(self) -> Image:
         center = self.location.center
         radius = self.location.radius
@@ -31,6 +32,8 @@ class GalaxyMasker:
 
         new_image = numpy.zeros(galaxy_rectangle.data.shape)
 
+        # In effect, we just set every pixel outside the circle to a NaN
+        # So that it isn't included. Pretty simple.
         for y in range(galaxy_rectangle.shape[0]):
             for x in range(galaxy_rectangle.shape[1]):
                 if dist((x, y), center) > radius:

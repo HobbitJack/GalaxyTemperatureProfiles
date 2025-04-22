@@ -1,9 +1,10 @@
 """
 galaxyunwinder.py
 
-This module contains the GalaxyUnwinder class, which transforms a GalaxyImage from
-Cartesian (x, y) coordinates to a polar (θ, r) representation. It also includes
-an example usage under the __main__ guard for verifying accurate plots.
+This module defines the GalaxyUnwinder class, which transforms a GalaxyImage from
+Cartesian (x, y) coordinates to a polar (θ, r) representation using the largest
+inscribed circle radius to guarantee in-bounds sampling. An example under the
+__main__ guard demonstrates its usage for visualization.
 """
 from galaxyimage import GalaxyImage
 import numpy as np

@@ -10,4 +10,4 @@ class RadialAverager:
         self.radial_data: numpy.ndarray = radial_data
 
     def compute_average(self) -> list[float]:
-        return list(reversed([float(x) for x in numpy.nanmean(self.radial_data, 0)]))
+        return [float(x) for x in numpy.nanmean(self.radial_data, 0)]

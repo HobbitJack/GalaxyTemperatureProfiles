@@ -22,7 +22,7 @@ Workflow:
 2. Automatically find the location of the galaxy using the R-band.
 3. Mask everything outside the galaxy to clean up noise.
 4. Calculate a temperature map using color differences between bands.
-5. Unwind the image radially (polar transformation).
+5. Unwind the image radially.
 6. Compute the radial average temperature profile.
 7. Plot and save the temperature profile as a .png.
 
