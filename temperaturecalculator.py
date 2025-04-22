@@ -2,6 +2,7 @@ from galaxyimage import GalaxyImage
 from image import Image
 import numpy as np
 
+
 class TemperatureCalculator:
     """
     TemperatureCalculator
@@ -27,13 +28,18 @@ class TemperatureCalculator:
             Returns a GalaxyImage containing the 2D map of effective temperatures in Kelvin.
     """
 
-    def __init__(self, r_band_image: GalaxyImage, g_band_image: GalaxyImage, z_band_image: GalaxyImage) -> None:
+    def __init__(
+        self,
+        r_band_image: GalaxyImage,
+        g_band_image: GalaxyImage,
+        z_band_image: GalaxyImage,
+    ) -> None:
         self.r_band_image = r_band_image
         self.g_band_image = g_band_image
         self.z_band_image = z_band_image
 
     def color_index(self, r_value: float, g_value: float) -> float:
-        return r_value - g_value
+        return float(r_value) - float(g_value)
 
     def color_to_kelvin(self, color_index: float) -> float:
         if not -1.5 < color_index < 2.0:
