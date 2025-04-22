@@ -7,12 +7,28 @@ import numpy
 
 
 class GalaxyMasker:
+    """
+    GalaxyMasker
+
+    Finds and masks a circe around the center galaxy image.
+
+    Attributes:
+        image (Image): original image with the galaxy
+        location (GalaxyLocation): center and radius of the galaxy
+    """
     def __init__(self, image: Image, location: GalaxyLocation) -> None:
         self.image: Image = image
         self.location: GalaxyLocation = location
 
     # This gets a bounding box around the circle of the galaxy_
     def get_galaxy(self) -> Image:
+        """
+        Create a region around the galaxy center and radius.
+
+        Returns:
+            Image: smaller image that encloses the galaxy.
+
+        """
         center = self.location.center
         radius = self.location.radius
         center_x, center_y = center
@@ -25,6 +41,14 @@ class GalaxyMasker:
         )
 
     def mask_out_galaxy(self) -> Image:
+        """
+        Mask out the galaxy, based off of pixels not in the region,
+        setting them to NaN values.
+
+        Returns:
+            Image: cropped image of a circle encapsulating the circular region
+
+        """
         galaxy_rectangle = self.get_galaxy()
 
         center = (galaxy_rectangle.shape[0] // 2, galaxy_rectangle.shape[1] // 2)
