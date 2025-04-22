@@ -36,11 +36,18 @@ Code from https://github.com/wh1tewolfxx/Python-Polar-Unwrap used under Expat/MI
 ### Dataset
 Galaxy10 DECaLS Dataset: https://github.com/henrysky/Galaxy10
 
+### Theoretical
+F. J. Ballesteros 2012 *EPL* 97 34008 https://iopscience.iop.org/article/10.1209/0295-5075/97/34008
+
 ### Module Documentation
 Astropy Documentation: https://docs.astropy.org/en/stable/index_user_docs.html
+
 h5py Documentation: https://docs.h5py.org/en/stable/index.html
+
 Matplotlib Pyplot Documentation: https://matplotlib.org/stable/api/pyplot_summary.html
+
 Numpy Documentation: https://numpy.org/doc/2.2/user/index.html#user
+
 Photutils Documentation: https://photutils.readthedocs.io/en/stable/index.html
 
 ## License
