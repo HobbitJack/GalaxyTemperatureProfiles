@@ -8,7 +8,6 @@ The concept of this project was primarily to leverage the size of our team.
 With four team members, it was critical to find some structure that would allow all to contribute simultaneously without anyone relying on any other part being completed in any given timeframe.
 The result was a framework that uses a pattern similar to dependency injection.
 The top-level pipeline was the first part of the project implemented, and then as each subsequent part was written with a matching interface, as they were completed each was merged into the main project.
-At the end, following minor integration testing, we were left with an almost! functional project that, if it weren't for a few minor factors, would be compositing plots of spiral galaxy temperature as a function of radius.
 
 ### Successes
 As a team, developing this project was a joy.
