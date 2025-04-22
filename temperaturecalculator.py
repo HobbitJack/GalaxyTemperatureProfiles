@@ -3,13 +3,29 @@ from image import Image
 import numpy
 
 
+# Central wavelengths for DECaLS filters in meters (converted from nm)
+LAMBDA_G = 477e-9
+LAMBDA_R = 623e-9
+
+# Compute x = hc / (λ k_B) for both bands
+h = 6.626e-34  # Planck constant
+c = 3e8  # speed of light
+kB = 1.381e-23  # Boltzmann constant
+X_G = h * c / (LAMBDA_G * kB)
+X_R = h * c / (LAMBDA_R * kB)
+
+GAMMA = 5 - 9 * (numpy.log(X_G / X_R) + 3) ** -0.252
+
+
 class TemperatureCalculator:
     """
-    Computes pixel-wise blackbody temperature estimates (in Kelvin) from DECaLS R, G, and Z-band images
-    using a generalized dual-logarithmic estimator adapted from the blackbody intensity ratio method.
+        Computes pixel-wise blackbody temperature estimates (in Kelvin) from DECaLS R, G, and Z-band images
+        using a generalized dual-logarithmic estimator adapted from the blackbody intensity ratio method.
 
-    This estimator is more accurate across temperature ranges, especially at high temperatures,
-    by blending two estimates (τ and τ′) using a fitted gamma exponent based on the filter wavelengths.
+        This estimator is more accurate across temperature ranges, especially at high temperatures,
+        by blending two estimates (τ and τ′) using a fitted gamma exponent based on the filter wavelengths.
+
+    Uses https://iopscience.iop.org/article/10.1209/0295-5075/97/34008, specifically Eqs (9), (11), (13).
     """
 
     def __init__(
@@ -22,33 +38,16 @@ class TemperatureCalculator:
         self.g_band_image = g_band_image
         self.z_band_image = z_band_image
 
-        # Central wavelengths for DECaLS filters in meters (converted from nm)
-        self.lambda_g = 477e-9
-        self.lambda_r = 623e-9
-
-        # Compute x = hc / (λ k_B) for both bands
-        h = 6.626e-34  # Planck constant
-        c = 3e8  # speed of light
-        kB = 1.381e-23  # Boltzmann constant
-        self.x_g = h * c / (self.lambda_g * kB)
-        self.x_r = h * c / (self.lambda_r * kB)
-
-        self.n = 4  # photon count proportional regime
-        log_ratio = numpy.log(self.x_g / self.x_r)
-        self.gamma = 5 - 9 * (abs(log_ratio) + 3) ** -0.252
-
     def _estimate_temperature(self, intensity_r: float, intensity_g: float) -> float:
         if intensity_r <= 0 or intensity_g <= 0:
             return numpy.nan
 
         try:
-            tau = (self.x_g - self.x_r) / numpy.log(
-                intensity_r / intensity_g * (self.x_g / self.x_r) ** (self.n - 1)
+            tau = (X_G - X_R) / numpy.log(
+                intensity_r / intensity_g * (X_G / X_R) ** 3  # N = 4; N-1 -> 3
             )
-            tau_prime = (self.x_g - self.x_r) / numpy.log(
-                intensity_r
-                / intensity_g
-                * (self.x_g / self.x_r) ** (self.n - self.gamma)
+            tau_prime = (X_G - X_R) / numpy.log(
+                intensity_r / intensity_g * (X_G / X_R) ** (4 - GAMMA)
             )
             T = (tau + tau_prime) / 2
             return T if T > 0 else numpy.nan
